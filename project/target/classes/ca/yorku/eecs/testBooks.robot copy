@@ -1,0 +1,206 @@
+*** Settings ***
+Library           Collections
+Library           RequestsLibrary
+Test Timeout      30 seconds
+
+*** Test Cases ***
+addActorPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    name=Denzel Washington    actorId=nm1001213
+    ${resp}=    Put Request    localhost    /api/v1/addActor    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addActorFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    name=Will Smith
+    ${resp}=    Put Request    localhost    /api/v1/addActor    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+addMoviePass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    name=Parasite    movieId=nm7001453
+    ${resp}=    Put Request    localhost    /api/v1/addMovie    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addMovieFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    name=Parasite    
+    ${resp}=    Put Request    localhost    /api/v1/addMovie    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+addRelationshipPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorId=nm1001213    movieId=nm7001453
+    ${resp}=    Put Request    localhost    /api/v1/addRelationship    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addRelationshipFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorId=nm1001213    
+    ${resp}=    Put Request    localhost    /api/v1/addRelationship    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+addEventPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    eventName=Golden Globe Awards    eventID=ed2345678
+    ${resp}=    Put Request    localhost    /api/v1/addAwardEvent    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addEventFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    eventName=Golden Globe Awards   
+    ${resp}=    Put Request    localhost    /api/v1/addAwardEvent    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+addCategoryPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    categoryName=Best Actor    categoryID=ac2345678
+    ${resp}=    Put Request    localhost    /api/v1/addAwardCategory    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addCategoryFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    categoryName=Best Actor    
+    ${resp}=    Put Request    localhost    /api/v1/addAwardCategory    data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+addEventHasAwardRPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    eventID=ed2345678	categoryID=ac2345678
+    ${resp}=    Put Request    localhost    /api/v1/addeventHasAwardRelationship	data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addEventHasAwardRFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    eventID=ed2345678	
+    ${resp}=    Put Request    localhost    /api/v1/addeventHasAwardRelationship	data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+
+addActorNominatedPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213	eventID=ed2345678	year=2020	
+    ${resp}=    Put Request    localhost    /api/v1/actorNominatedAtEvent	data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addActorNominatedFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213	year=2020	
+    ${resp}=    Put Request    localhost    /api/v1/actorNominatedAtEvent	data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+addWonAwardRPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213	eventID=ed2345678	categoryID=ac2345678	year=2020	
+    ${resp}=    Put Request    localhost    /api/v1/wonAward	data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+addWonAwardRFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213		
+    ${resp}=    Put Request    localhost    /api/v1/wonAward	data=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+getActorWonAwardPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213    
+    ${resp}=    Get Request    localhost    /api/v1/getActorWonAward    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+getActorWonAwardFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm8910267    
+    ${resp}=    Get Request    localhost    /api/v1/getActorWonAward    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+getNominatedAtEventPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213	eventID=ed2345678    
+    ${resp}=    Get Request    localhost    /api/v1/getNominatedAtEvent    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+getNominatedAtEventFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm3728190	eventID=ed2345678    
+    ${resp}=    Get Request    localhost    /api/v1/getNominatedAtEvent    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+
+getActorPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm1001213	    
+    ${resp}=    Get Request    localhost    /api/v1/getActor    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+getActorFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorID=nm7625361	    
+    ${resp}=    Get Request    localhost    /api/v1/getActor    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+getMoviePass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    movieId=nm7001453	    
+    ${resp}=    Get Request    localhost    /api/v1/getMovie    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+getMovieFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    movieId=nm7002738	    
+    ${resp}=    Get Request    localhost    /api/v1/getMovie    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+getEventHasAwardRPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    eventID=ed2345678	categoryID=ac2345678	    
+    ${resp}=    Get Request    localhost    /api/v1/getEventHasAward    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+getEventHasAwardRFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    eventID=ed2345678	categoryID=ac2562718	    
+    ${resp}=    Get Request    localhost    /api/v1/getEventHasAward    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+hasRelationshipPass
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorId=nm1001213    movieId=nm7001453	    
+    ${resp}=    Get Request    localhost    /api/v1/hasRelationship    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+hasRelationshipFail
+    Create Session    localhost    http://localhost:8080
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    ${params}=    Create Dictionary    actorId=nm1001217    movieId=nm7001453    	    
+    ${resp}=    Get Request    localhost    /api/v1/hasRelationship    json=${params}    headers=${headers}
+    Should Be Equal As Strings    ${resp.status_code}    400
+
+
+
